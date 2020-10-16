@@ -10,8 +10,7 @@ app.use((err, req, res, next) => {
 
 app.post("/", (req, res) => {
     let response = [];
-    if(!req.body.payload) res.status(400).send({ 'error': errorMsg });
-    else {
+    try {
         req.body.payload.forEach(show => {
             if(show.drm && show.episodeCount > 0) {
                 response.push({
@@ -22,7 +21,7 @@ app.post("/", (req, res) => {
             }
         });
         res.send({response});
-    }
+    } catch(err) { res.status(400).send({ 'error': errorMsg }) }
 });
 
 app.listen(port, () => {

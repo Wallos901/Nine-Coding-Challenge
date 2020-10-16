@@ -5,6 +5,7 @@ const errorMsg = "Oh no, theres been a problem. Please ensure you have correctly
 
 app.use(express.json());
 app.use((err, req, res, next) => {
+    console.log(err);
     res.status(400).send({ 'error': errorMsg })
 });
 
@@ -21,7 +22,10 @@ app.post("/", (req, res) => {
             }
         });
         res.send({response});
-    } catch(err) { res.status(400).send({ 'error': errorMsg }) }
+    } catch(err) { 
+        console.log(err);
+        res.status(400).send({ 'error': errorMsg });
+    }
 });
 
 app.listen(port, () => {

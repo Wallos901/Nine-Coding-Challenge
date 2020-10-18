@@ -5,14 +5,15 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 app.use((err, req, res, next) => {
     console.log(err);
-    res.status(400).send({ "error": "Uh oh, a problem has been encountered. Please ensure all JSON objects in your request are formatted correctly :)" })
+    res.status(400).json({ "error": "Could not decode request. Please ensure all JSON objects in your request are formatted correctly :)" })
 });
 
-app.get("/", (req, res) => {
+app.post("/", (req, res) => {
     try {
-        res.send({ "response": searchShows(req.body.payload) });
+        res.json({ "response": searchShows(req.body.payload) });
     } catch(err) {
-        res.status(400).send({ "error": "Oh no, there's been a problem. Please ensure all shows are provided under the 'payload' key :)"});
+        console.log(err);
+        res.status(400).json({ "error": "Could not decode request. Please ensure all shows are provided under the 'payload' key :)"});
     }
 });
 

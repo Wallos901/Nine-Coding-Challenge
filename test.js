@@ -10,9 +10,16 @@ describe('GET /', () => {
             .expect(200)
     });
 
-    it('should return Bad Request status with invalid JSON input', () => {
+    it('should return 400 Bad Request status with invalid JSON input', () => {
         request(app)
             .get('/')
+            .expect(400)
+    });
+
+    it('should return 400 Bad Request status (not 500 Internal Server Error) with invalid JSON key input', () => {
+        request(app)
+            .get('/')
+            .send({ paylad:[] })
             .expect(400)
     });
 

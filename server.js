@@ -1,32 +1,39 @@
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
-const errorMsg = "Oh no, theres been a problem. Please ensure you have correctly formatted your JSON object, and all shows are provided under the 'payload' key :)"
 
 app.use(express.json());
 app.use((err, req, res, next) => {
     console.log(err);
-    res.status(400).send({ 'error': errorMsg })
+    res.status(400).send({ "error": "Uh oh, a problem has been encountered. Please ensure all JSON objects in your request are formatted correctly :)" })
 });
 
-app.post("/", (req, res) => {
-    let response = [];
+app.get("/", (req, res) => {
     try {
-        req.body.payload.forEach(show => {
-            if(show.drm && show.episodeCount > 0) {
-                response.push({
-                    image: show.image.showImage,
-                    slug: show.slug,
-                    title: show.title
-                })
-            }
-        });
-        res.send({response});
-    } catch(err) { 
-        console.log(err);
-        res.status(400).send({ 'error': errorMsg });
+        res.send({ "response": searchShows(req.body.payload) });
+    } catch(err) {
+        res.status(400).send({ "error": "Oh no, there's been a problem. Please ensure all shows are provided under the 'payload' key :)"});
     }
 });
+
+function searchShows(showList) {
+    let showsPassed = [];
+    showList.forEach(show => {
+        show = checkShow(show);
+        if(show) showsPassed.push(show);
+    });
+    return showsPassed;
+};
+
+function checkShow(show) {
+    if(show.drm && show.episodeCount > 0) {
+        return {
+            image: show.image.showImage,
+            slug:  show.slug,
+            title: show.title
+        };
+    };
+};
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
